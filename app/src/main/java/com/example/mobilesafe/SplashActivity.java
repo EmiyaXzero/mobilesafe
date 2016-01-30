@@ -1,23 +1,30 @@
 package com.example.mobilesafe;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mobilesafe.com.example.mobilesafe.utils.StreamTool;
 
+import net.tsz.afinal.FinalHttp;
+import net.tsz.afinal.http.AjaxCallBack;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -42,7 +49,8 @@ public class SplashActivity extends Activity {
      * 新版本下载地址
      */
     private String apkurl;
-
+    private String version;
+    private TextView tv_update_info;
 
 
     @Override
@@ -51,6 +59,7 @@ public class SplashActivity extends Activity {
         setContentView(R.layout.activity_splash);
         tv_splash_version = (TextView) findViewById(R.id.tv_splash_version);
         tv_splash_version.setText("版本号:" + getVersionName());
+        tv_update_info=(TextView)findViewById(R.id.tv_update_info);
         //检查升级
         checkupdate();
         //增加动画
@@ -58,6 +67,7 @@ public class SplashActivity extends Activity {
         //设置动画时间
         aa.setDuration(500);
         findViewById(R.id.rl_root_splash).startAnimation(aa);
+
     }
 
     private Handler handler = new Handler(){
@@ -67,7 +77,7 @@ public class SplashActivity extends Activity {
             switch (msg.what){
                 case SHOW_UPDATE_DIALOG:
                     //显示升级对话框
-                    Log.d("update","升级啊升级撒");
+                    showUpdateDialog();
                     break;
                 case ENTER_HOME:
                     //进入主界面
@@ -96,6 +106,73 @@ public class SplashActivity extends Activity {
         }
     };
 
+    //弹出升级对话框
+    private void showUpdateDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("提示升级");
+        builder.setMessage(description);
+        builder.setPositiveButton("立刻升级", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+              //下载apk
+                if(Environment.getExternalStorageDirectory().equals(Environment.MEDIA_MOUNTED)){
+                    //SD卡存在
+                    //afnal开源框架
+                    FinalHttp  finalhttp=new FinalHttp();
+                    finalhttp.download(apkurl, Environment.getExternalStorageDirectory().getAbsolutePath() + "/mobilesafe" + version + ".apk", new AjaxCallBack<File>() {
+                        @Override
+                        public void onLoading(long count, long current) {
+                            super.onLoading(count, current);
+                            //启动页面新加进度展示
+                            int progress= (int) (current*100/count);// 当前下载百分比   count总大小
+                            tv_update_info.setText("下载进度"+progress+"%");
+                        }
+
+                        @Override
+                        public void onSuccess(File file) {
+                            super.onSuccess(file);
+                            //下载完成后安装
+                            installAPK(file);
+                        }
+
+                        /**
+                         * 安装apk
+                         * @param file 文件
+                         */
+                        private void installAPK(File file) {
+                            Intent intent =new Intent();
+                            intent.setAction("android.intent.action.VIEW");
+                            intent.addCategory("android.intent.category.DEFAULT");
+                            intent.setDataAndType(Uri.fromFile(file),"application/vnd.android.package-archive");
+
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onFailure(Throwable t, int errorNo, String strMsg) {
+                            t.printStackTrace();
+                            Toast.makeText(getApplicationContext(), "下载失败", Toast.LENGTH_LONG).show();
+                            super.onFailure(t, errorNo, strMsg);
+                        }
+                    });
+                }else {
+                    Toast.makeText(getApplicationContext(),"缺少SD卡",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+            }
+        });
+        builder.setNegativeButton("稍后升级", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                enterHome();
+            }
+        });
+        //还需要show
+        builder.show();
+    }
+    //跳转主界面
     private void enterHome() {
         Intent  intent =new Intent(this,HomeActivity.class);
         startActivity(intent);
@@ -129,7 +206,7 @@ public class SplashActivity extends Activity {
                         //json 解析
                         JSONObject jsonObject = new JSONObject(response);
                         //得到服务器的信息
-                        String version = jsonObject.getString("version");
+                         version = jsonObject.getString("version");
                          description = jsonObject.getString("description");
                          apkurl = jsonObject.getString("apkurl");
                       //校验是否有新版本
