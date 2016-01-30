@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,6 +57,7 @@ public class SplashActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_splash);
         tv_splash_version = (TextView) findViewById(R.id.tv_splash_version);
         tv_splash_version.setText("版本号:" + getVersionName());
@@ -110,22 +112,31 @@ public class SplashActivity extends Activity {
     private void showUpdateDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("提示升级");
+        //builder.setCancelable(false);  //无法取消
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+               //进入主页面
+                enterHome();
+                dialog.dismiss();
+            }
+        });
         builder.setMessage(description);
-        builder.setPositiveButton("立刻升级", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("立刻升级", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-              //下载apk
-                if(Environment.getExternalStorageDirectory().equals(Environment.MEDIA_MOUNTED)){
+                //下载apk
+                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                     //SD卡存在
                     //afnal开源框架
-                    FinalHttp  finalhttp=new FinalHttp();
+                    FinalHttp finalhttp = new FinalHttp();
                     finalhttp.download(apkurl, Environment.getExternalStorageDirectory().getAbsolutePath() + "/mobilesafe" + version + ".apk", new AjaxCallBack<File>() {
                         @Override
                         public void onLoading(long count, long current) {
                             super.onLoading(count, current);
                             //启动页面新加进度展示
-                            int progress= (int) (current*100/count);// 当前下载百分比   count总大小
-                            tv_update_info.setText("下载进度"+progress+"%");
+                            int progress = (int) (current * 100 / count);// 当前下载百分比   count总大小
+                            tv_update_info.setText("下载进度" + progress + "%");
                         }
 
                         @Override
@@ -140,10 +151,10 @@ public class SplashActivity extends Activity {
                          * @param file 文件
                          */
                         private void installAPK(File file) {
-                            Intent intent =new Intent();
+                            Intent intent = new Intent();
                             intent.setAction("android.intent.action.VIEW");
                             intent.addCategory("android.intent.category.DEFAULT");
-                            intent.setDataAndType(Uri.fromFile(file),"application/vnd.android.package-archive");
+                            intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
 
                             startActivity(intent);
                         }
@@ -155,14 +166,14 @@ public class SplashActivity extends Activity {
                             super.onFailure(t, errorNo, strMsg);
                         }
                     });
-                }else {
-                    Toast.makeText(getApplicationContext(),"缺少SD卡",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "缺少SD卡", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
             }
         });
-        builder.setNegativeButton("稍后升级", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("稍后升级", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
