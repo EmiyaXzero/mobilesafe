@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.view.View;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
@@ -52,18 +54,30 @@ public class SplashActivity extends Activity {
     private String apkurl;
     private String version;
     private TextView tv_update_info;
-
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_splash);
+        sp=getSharedPreferences("config",MODE_PRIVATE);
         tv_splash_version = (TextView) findViewById(R.id.tv_splash_version);
         tv_splash_version.setText("版本号:" + getVersionName());
         tv_update_info=(TextView)findViewById(R.id.tv_update_info);
+        if(sp.getBoolean("update",false)){
         //检查升级
         checkupdate();
+        } else{
+            //自动升级关闭
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //进入主界面
+                    enterHome();
+                }
+            },2000);
+        }
         //增加动画
         AlphaAnimation aa =new AlphaAnimation(0.2f,1.0f);
         //设置动画时间
@@ -134,6 +148,7 @@ public class SplashActivity extends Activity {
                         @Override
                         public void onLoading(long count, long current) {
                             super.onLoading(count, current);
+                            tv_update_info.setVisibility(View.VISIBLE);
                             //启动页面新加进度展示
                             int progress = (int) (current * 100 / count);// 当前下载百分比   count总大小
                             tv_update_info.setText("下载进度" + progress + "%");
