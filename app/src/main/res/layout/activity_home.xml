@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
     <TextView
         android:background="#8866ff00"
         android:gravity="center"
@@ -11,6 +12,13 @@
         android:layout_height="55dp"
         android:text="功能列表"/>
 
+    <com.example.mobilesafe.com.example.mobilesafe.ui.FocusedTextView
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:text="来下载啊，再不下载迟了啊！！！真的要迟了，走过路过不要错过！"
+        android:textSize="18sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <GridView
         android:paddingTop="15dp"
         android:id="@+id/list_home"
