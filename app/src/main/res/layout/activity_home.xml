@@ -12,7 +12,7 @@
         android:layout_height="55dp"
         android:text="功能列表"/>
 
-    <com.example.mobilesafe.com.example.mobilesafe.ui.FocusedTextView
+    <com.example.mobilesafe.ui.FocusedTextView
         android:singleLine="true"
         android:ellipsize="marquee"
         android:text="来下载啊，再不下载迟了啊！！！真的要迟了，走过路过不要错过！"

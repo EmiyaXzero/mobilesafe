@@ -1,4 +1,4 @@
-package com.example.mobilesafe.com.example.mobilesafe.ui;
+package com.example.mobilesafe.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -17,15 +17,21 @@ public class SettingItemView extends RelativeLayout {
     private CheckBox checkBox;
     private TextView tv_desc;
     private TextView tv_title;
+    private String  desc_on;
+    private String desc_off;
 
     public SettingItemView(Context context) {
         super(context);
         initView(context);
     }
-
+    //两个参数的构造方法是在布局文件中实例化
     public SettingItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView(context);
+        String title = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto","dtitle");
+        desc_on= attrs.getAttributeValue("http://schemas.android.com/apk/res-auto","desc_on");
+        desc_off=attrs.getAttributeValue("http://schemas.android.com/apk/res-auto","desc_off");
+        tv_title.setText(title);
     }
 
     public SettingItemView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -53,6 +59,11 @@ public class SettingItemView extends RelativeLayout {
      * 设置组合控件的状态
      */
     public void setChecked(boolean checked){
+        if(checked){
+            SetDec(desc_on);
+        }else {
+            SetDec(desc_off);
+        }
         checkBox.setChecked(checked);
     }
 

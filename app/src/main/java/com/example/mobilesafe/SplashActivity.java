@@ -18,7 +18,7 @@ import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mobilesafe.com.example.mobilesafe.utils.StreamTool;
+import com.example.mobilesafe.utils.StreamTool;
 
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;

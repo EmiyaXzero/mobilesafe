@@ -1,4 +1,4 @@
-package com.example.mobilesafe.com.example.mobilesafe.utils;
+package com.example.mobilesafe.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
