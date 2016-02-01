@@ -19,6 +19,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mobilesafe.utils.MD5Utils;
+
+import net.tsz.afinal.utils.Utils;
+
 import org.w3c.dom.Text;
 
 /**
@@ -120,7 +124,7 @@ public class HomeActivity extends Activity {
                 if(pass.equals(pass_cofirm)){
                     //一致保存密码，并把对话框消掉，并进入防盗页面
                    SharedPreferences.Editor editor= sp.edit();
-                    editor.putString("password",pass);
+                    editor.putString("password", MD5Utils.md5Password(pass));
                     editor.commit();
                     dialog.dismiss();
                 }else {
@@ -158,16 +162,17 @@ public class HomeActivity extends Activity {
             public void onClick(View v) {
                 String pass = set_pass.getText().toString().trim();//去掉空格
                 String pass_true=sp.getString("password",null);
+               // Log.d("True",pass_true);
                 if(TextUtils.isEmpty(pass)){
                     Toast.makeText(HomeActivity.this,"你的密码为空！",Toast.LENGTH_SHORT).show();
 
                 }
-                if(pass.equals(pass_true)){
-                    Log.d("True","进入防盗界面");
+                if(MD5Utils.md5Password(pass).equals(pass_true)){
+                 //   Log.d("True","进入防盗界面");
                     dialog.dismiss();
                 }else {
                     Toast.makeText(HomeActivity.this,"你的密码错误！",Toast.LENGTH_SHORT).show();
-
+                    set_pass.setText("");
                 }
             }
         });
