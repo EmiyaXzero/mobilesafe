@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sh="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -10,30 +11,22 @@
         android:textSize="22sp"
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:text="1.欢迎使用手机防盗"/>
+        android:text="2.手机卡绑定"/>
     <TextView
-        android:text="您的手机防盗卫士："
-        style="@style/text_content_style" />
-    <TextView
-        android:text="sim卡变更警报"
         style="@style/text_content_style"
-        android:drawableLeft="@android:drawable/star_big_on"
-        />
+        android:text="通过绑定sim卡:"/>
     <TextView
-        android:text="GPS追踪"
-        style="@style/text_content_style"
-        android:drawableLeft="@android:drawable/star_big_on"
-        />
-    <TextView
-        android:text="远程数据销毁"
-        style="@style/text_content_style"
-        android:drawableLeft="@android:drawable/star_big_on"
-        />
-    <TextView
-        android:text="远程锁屏"
-        style="@style/text_content_style"
-        android:drawableLeft="@android:drawable/star_big_on"
-        />
+       style="@style/text_content_style"
+        android:text="下次重启手机如果发现sim卡变化\n就会发送报警短信"
+       />
+    <com.example.mobilesafe.ui.SettingItemView
+        sh:dtitle="点击绑定sim卡"
+        sh:desc_on="sim卡绑定成功"
+        sh:desc_off="sim未绑定"
+        android:id="@+id/siv_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 
     <LinearLayout
         android:orientation="horizontal"
@@ -43,12 +36,12 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@android:drawable/presence_online"
+            android:src="@android:drawable/presence_invisible"
             />
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@android:drawable/presence_invisible"/>
+            android:src="@android:drawable/presence_online"/>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,7 +60,9 @@
             android:layout_centerInParent="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/setup1"/>
+            android:src="@drawable/bind"/>
+        <Button
+            style="@style/button_pre_style" />
         <Button
             style="@style/button_next_style"
             />
