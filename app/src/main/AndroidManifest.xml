@@ -19,6 +19,8 @@
         </activity>
         <activity android:name=".HomeActivity"/>
         <activity android:name=".SettingActivity"/>
+        <activity android:name=".LostFindActivity"/>
+        <activity android:name=".Setup1Activity"/>
     </application>
 
 </manifest>

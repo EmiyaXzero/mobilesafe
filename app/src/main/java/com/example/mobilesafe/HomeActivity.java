@@ -170,6 +170,8 @@ public class HomeActivity extends Activity {
                 if(MD5Utils.md5Password(pass).equals(pass_true)){
                  //   Log.d("True","进入防盗界面");
                     dialog.dismiss();
+                    Intent intent =new Intent(HomeActivity.this,LostFindActivity.class);
+                    startActivity(intent);
                 }else {
                     Toast.makeText(HomeActivity.this,"你的密码错误！",Toast.LENGTH_SHORT).show();
                     set_pass.setText("");
