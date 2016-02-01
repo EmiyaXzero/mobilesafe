@@ -8,7 +8,7 @@ import android.view.View;
 /**
  * Created by abc on 2016/2/1.
  */
-public class Setup3Activity extends Activity {
+public class Setup3Activity extends BaseSetupActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -16,25 +16,18 @@ public class Setup3Activity extends Activity {
     }
 
 
-    /**
-     * 上一步点击事件
-     * @param view
-     */
-    public void pre(View view){
-        Intent intent = new Intent(this,Setup2Activity.class);
-        startActivity(intent);
-        finish();
-        overridePendingTransition(R.anim.pre_tran_in, R.anim.pre_tran_out);
-    }
-
-    /**
-     *下一步点击事件
-     * @param view
-     */
-    public void next(View view){
+    public  void showNext(){
         Intent intent = new Intent(this,Setup4Activity.class);
         startActivity(intent);
         finish();
-        overridePendingTransition(R.anim.tran_in, R.anim.tran_out);
-    }
+        //要求在finish方法 或startActivity后面执行
+        overridePendingTransition(R.anim.tran_in,R.anim.tran_out);
+    };
+
+    public   void showPre(){
+        Intent  intent = new Intent(this,Setup2Activity.class);
+        startActivity(intent);
+        finish();
+        overridePendingTransition(R.anim.pre_tran_in, R.anim.pre_tran_out);
+    } ;
 }

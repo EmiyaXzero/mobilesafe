@@ -9,7 +9,7 @@ import android.view.View;
 /**
  * Created by abc on 2016/2/1.
  */
-public class Setup4Activity extends Activity {
+public class Setup4Activity extends BaseSetupActivity {
    private SharedPreferences sp;
 
     @Override
@@ -19,16 +19,20 @@ public class Setup4Activity extends Activity {
 
     }
 
-    /**
-     * 上一步点击事件
-     * @param view
-     */
-    public void pre(View view){
-        Intent intent = new Intent(this,Setup3Activity.class);
+    public  void showNext(){
+        Intent intent = new Intent(this,LostFindActivity.class);
+        startActivity(intent);
+        finish();
+        //要求在finish方法 或startActivity后面执行
+        overridePendingTransition(R.anim.tran_in, R.anim.tran_out);
+    };
+
+    public   void showPre(){
+        Intent  intent = new Intent(this,Setup3Activity.class);
         startActivity(intent);
         finish();
         overridePendingTransition(R.anim.pre_tran_in, R.anim.pre_tran_out);
-    }
+    } ;
 
     /**
      *下一步点击事件设置完成并且sp中更新
@@ -39,9 +43,6 @@ public class Setup4Activity extends Activity {
         SharedPreferences.Editor editor =sp.edit();
         editor.putBoolean("configed",true);
         editor.commit();
-        Intent intent = new Intent(this,LostFindActivity.class);
-        startActivity(intent);
-        finish();
-        overridePendingTransition(R.anim.tran_in, R.anim.tran_out);
+        showNext();
     }
 }
