@@ -1,6 +1,7 @@
 package com.example.mobilesafe;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -14,9 +15,12 @@ public abstract class BaseSetupActivity extends Activity {
     //定义一个手势识别器
     private GestureDetector detector;
 
+    protected SharedPreferences sp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sp=getSharedPreferences("config",MODE_PRIVATE);
         detector =new GestureDetector(this,new GestureDetector.SimpleOnGestureListener(){
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {

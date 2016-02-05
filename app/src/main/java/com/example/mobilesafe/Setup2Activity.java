@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.example.mobilesafe.ui.SettingItemView;
@@ -14,15 +16,14 @@ import com.example.mobilesafe.ui.SettingItemView;
 public class Setup2Activity extends BaseSetupActivity {
     private SettingItemView siv_update;
 
-    private SharedPreferences sp;
-
+    TelephonyManager tm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup2);
-        sp=getSharedPreferences("config",MODE_PRIVATE);
         siv_update= (SettingItemView) findViewById(R.id.siv_update);
-        if(sp.getBoolean("update",false)){
+        tm= (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        if(!TextUtils.isEmpty(sp.getString("sim",null))){
             siv_update.setChecked(true);
         } else {
             siv_update.setChecked(false);
@@ -30,16 +31,17 @@ public class Setup2Activity extends BaseSetupActivity {
         siv_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences.Editor editor = sp.edit();
+                String sim =tm.getSimSerialNumber();//获取sim卡序列号
+                SharedPreferences.Editor editor = sp.edit();  //sp sharedpreference在父类已经实现
                 //判断是否选中
                 if (siv_update.isChecked()) {
                     //已经选中
                     siv_update.setChecked(false);
-                    editor.putBoolean("update", false);
+                    editor.putString("sim",null);
                 } else {
                     //没选中
                     siv_update.setChecked(true);
-                    editor.putBoolean("update", true);
+                    editor.putString("sim",sim);
                 }
                 editor.commit();
 
