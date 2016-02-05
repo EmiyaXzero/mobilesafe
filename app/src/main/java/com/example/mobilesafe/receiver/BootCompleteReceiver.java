@@ -25,7 +25,7 @@ public class BootCompleteReceiver extends BroadcastReceiver {
             String savedSim = sp.getString("sim", null);
             //读取当前的sim卡信息
             tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            if (tm.getSimSerialNumber().equals(savedSim+"abc")) {
+            if (tm.getSimSerialNumber().equals(savedSim)) {
                 //sim卡没有变
             } else {
                 //变更了

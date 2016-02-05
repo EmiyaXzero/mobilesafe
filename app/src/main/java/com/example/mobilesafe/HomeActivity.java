@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mobilesafe.Service.GPSService;
 import com.example.mobilesafe.utils.MD5Utils;
 
 import net.tsz.afinal.utils.Utils;
