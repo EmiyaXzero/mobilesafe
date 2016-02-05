@@ -7,8 +7,11 @@ import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.mobilesafe.ui.SettingItemView;
+
+import org.w3c.dom.Text;
 
 /**
  * Created by abc on 2016/2/1.
@@ -37,7 +40,7 @@ public class Setup2Activity extends BaseSetupActivity {
                 if (siv_update.isChecked()) {
                     //已经选中
                     siv_update.setChecked(false);
-                    editor.putString("sim",null);
+                    editor.putString("sim", null);
                 } else {
                     //没选中
                     siv_update.setChecked(true);
@@ -49,11 +52,19 @@ public class Setup2Activity extends BaseSetupActivity {
         });
     }
     public  void showNext(){
-        Intent intent = new Intent(this,Setup3Activity.class);
-        startActivity(intent);
-        finish();
-        //要求在finish方法 或startActivity后面执行
-        overridePendingTransition(R.anim.tran_in,R.anim.tran_out);
+        //判断是否绑定sim卡
+        String sim =sp.getString("sim",null);
+        if(!TextUtils.isEmpty(sim)) {
+            Intent intent = new Intent(this, Setup3Activity.class);
+            startActivity(intent);
+            finish();
+            //要求在finish方法 或startActivity后面执行
+            overridePendingTransition(R.anim.tran_in, R.anim.tran_out);
+        }else {
+            Toast.makeText(this,"sim卡没有绑定",Toast.LENGTH_LONG).show();
+            return;
+        }
+
     };
 
     public   void showPre(){
