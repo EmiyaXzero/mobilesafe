@@ -2,9 +2,12 @@ package com.example.mobilesafe;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -18,15 +21,26 @@ import java.util.Map;
  */
 public class SelectContactActivity extends Activity {
     private ListView list_select_contact;
-    private List<Map<String, String>> contactInfo;
-
+    private List<Map<String,String>> data;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_contact);
         list_select_contact = (ListView) findViewById(R.id.list_select_contact);
-        List<Map<String,String>> data=getContactInfo();
+        data=getContactInfo();
         list_select_contact.setAdapter(new SimpleAdapter(this,data,R.layout.contact_item_view,new String[]{"name","phone"},new int[]{R.id.tv_name,R.id.tv_phone}));
+        list_select_contact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String phone = data.get(position).get("phone");
+                //Intent 传数据
+                Intent data = new Intent();
+                data.putExtra("phone", phone);
+                setResult(0, data);
+                //当前页面关闭掉
+                finish();
+            }
+        });
     }
 
     /**
