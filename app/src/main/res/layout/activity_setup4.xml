@@ -13,6 +13,7 @@
         android:layout_height="55dp"
         android:text="恭喜你设置完成"/>
     <CheckBox
+        android:id="@+id/cb_state"
         android:text="你没有开启防盗保护"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
