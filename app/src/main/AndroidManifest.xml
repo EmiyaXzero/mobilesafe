@@ -33,6 +33,8 @@
         <activity android:name=".Setup4Activity" />
         <activity android:name=".SelectContactActivity" />
         <service android:name=".Service.GPSService"/>
+        <activity android:name=".AtoolsActivity"/>
+        <activity android:name=".NumberAddressQueryActivity"/>
         <receiver android:name=".receiver.BootCompleteReceiver">
                <intent-filter>
                    <action android:name="android.intent.action.BOOT_COMPLETED"/>

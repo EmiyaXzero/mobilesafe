@@ -55,6 +55,7 @@ public class HomeActivity extends Activity {
     private Button ok;
     private Button cancel;
     private AlertDialog dialog;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +73,14 @@ public class HomeActivity extends Activity {
                         //进入手机防盗页面
                         showLostFindDialog();
                         break;
+                    case 7:
+                        //进入高级工具页面
+                        intent = new Intent(HomeActivity.this,AtoolsActivity.class);
+                        startActivity(intent);
+                        break;
                     case 8:
                         //进入设置中心
-                        Intent intent = new Intent(HomeActivity.this,SettingActivity.class);
+                        intent = new Intent(HomeActivity.this,SettingActivity.class);
                         startActivity(intent);
                         break;
                     default:

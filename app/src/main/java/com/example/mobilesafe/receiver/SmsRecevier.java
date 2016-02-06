@@ -25,7 +25,7 @@ public class SmsRecevier extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
        sp=context.getSharedPreferences("config",context.MODE_PRIVATE);
       //写接收短信代码
-      Object[] objs = (Objects[]) intent.getExtras().get("pdus");//pdus短信的协议
+      Object[] objs = (Object[]) intent.getExtras().get("pdus");//pdus短信的协议
       for(Object o :objs){
           String phone=sp.getString("phone",null);
 
