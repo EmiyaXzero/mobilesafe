@@ -2,6 +2,7 @@ package com.example.mobilesafe;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -21,10 +22,16 @@ public class NumberAddressQueryActivity extends Activity {
     private EditText ed_phone;
     private TextView result;
 
+    /**
+     *系统提供的振动服务器
+     */
+    Vibrator vibrator;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_number_address_query);
+        vibrator= (Vibrator) getSystemService(VIBRATOR_SERVICE);
         ed_phone = (EditText) findViewById(R.id.ed_phone);
         result = (TextView) findViewById(R.id.result);
         ed_phone.addTextChangedListener(new TextWatcher() {
@@ -75,6 +82,10 @@ public class NumberAddressQueryActivity extends Activity {
             Toast.makeText(this, "号码为空", Toast.LENGTH_SHORT).show();
             Animation shake = AnimationUtils.loadAnimation(this,R.anim.shake);
             ed_phone.startAnimation(shake);
+            //当电话号码为空的时候振动手机
+           // vibrator.vibrate(1000);
+            //-1不重复  0循环
+            vibrator.vibrate(new long[]{200,200,300,300,1000,2000},-1);
             return;
         }else {
               find(number);
