@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mobilesafe.db.dao.NumberAddressQueryUtils;
+
 /**
  * Created by abc on 2016/2/6.
  */
@@ -35,7 +37,9 @@ public class NumberAddressQueryActivity extends Activity {
             return;
         }else {
             //去数据库查询号码归属地
-            Log.d("PhoneNumber",number);
+            //查询数据库
+            String location=  NumberAddressQueryUtils.queryNumber(number);
+            result.setText(location);
         }
     }
 }
