@@ -32,6 +32,14 @@
         sh:dtitle="设置显示号码归属地">
 
     </com.example.mobilesafe.ui.SettingItemView>
+    
+    <com.example.mobilesafe.ui.SettingClickView
+        android:id="@+id/scv_changebg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </com.example.mobilesafe.ui.SettingClickView>
+
 
 
 </LinearLayout>
