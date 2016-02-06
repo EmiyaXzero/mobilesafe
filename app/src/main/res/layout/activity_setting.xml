@@ -4,22 +4,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
         android:background="#8866ff00"
         android:gravity="center"
         android:textColor="#000000"
-        android:textSize="22sp"
-        android:layout_width="match_parent"
-        android:layout_height="55dp" />
-<com.example.mobilesafe.ui.SettingItemView
-    sh:dtitle="设置自动更新"
-    sh:desc_on="自动更新已经开启"
-    sh:desc_off="自动更新已经关闭"
-    android:id="@+id/siv_update"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+        android:textSize="22sp" />
 
-</com.example.mobilesafe.ui.SettingItemView>
+    <com.example.mobilesafe.ui.SettingItemView
+        android:id="@+id/siv_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        sh:desc_off="自动更新已经关闭"
+        sh:desc_on="自动更新已经开启"
+        sh:dtitle="设置自动更新">
+
+    </com.example.mobilesafe.ui.SettingItemView>
+
+    <com.example.mobilesafe.ui.SettingItemView
+        android:id="@+id/siv_show_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        sh:desc_off="设置显示号码归属地已经关闭"
+        sh:desc_on="设置显示号码归属地已经开启"
+        sh:dtitle="设置显示号码归属地">
+
+    </com.example.mobilesafe.ui.SettingItemView>
 
 
 </LinearLayout>
