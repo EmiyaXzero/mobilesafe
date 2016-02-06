@@ -5,8 +5,9 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,6 +73,8 @@ public class NumberAddressQueryActivity extends Activity {
         String number = ed_phone.getText().toString().trim();
         if(TextUtils.isEmpty(number)){
             Toast.makeText(this, "号码为空", Toast.LENGTH_SHORT).show();
+            Animation shake = AnimationUtils.loadAnimation(this,R.anim.shake);
+            ed_phone.startAnimation(shake);
             return;
         }else {
               find(number);
