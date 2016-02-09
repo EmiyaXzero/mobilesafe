@@ -43,6 +43,23 @@ public class BlackNumberDao  {
         db.close();
         return result;
     }
+    /**
+     * 查询黑名单号码的拦截模式
+     * @param number
+     * @return
+     */
+    public String findMode(String number){
+        String mode=null;
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor =db.rawQuery("select mode from blacknumber where number=?", new String[]{number});
+        if(cursor.moveToNext()){
+           mode=cursor.getString(0);
+        }
+        cursor.close();
+        db.close();
+        return mode;
+    }
+
 
     /**
      * 增加黑名单信息

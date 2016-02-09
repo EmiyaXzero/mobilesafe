@@ -32,7 +32,8 @@
         sh:dtitle="设置显示号码归属地">
 
     </com.example.mobilesafe.ui.SettingItemView>
-    
+
+
     <com.example.mobilesafe.ui.SettingClickView
         android:id="@+id/scv_changebg"
         android:layout_width="wrap_content"
@@ -40,6 +41,15 @@
 
     </com.example.mobilesafe.ui.SettingClickView>
 
+    <com.example.mobilesafe.ui.SettingItemView
+        android:id="@+id/siv_callsms_safe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        sh:desc_off="黑名单拦截已经关闭"
+        sh:desc_on="黑名单拦截已经开启"
+        sh:dtitle="黑名单拦截设置">
+
+    </com.example.mobilesafe.ui.SettingItemView>
 
 
 </LinearLayout>

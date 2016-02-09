@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.example.mobilesafe.Service.AddressService;
+import com.example.mobilesafe.Service.CallSmsSafeService;
 import com.example.mobilesafe.ui.SettingClickView;
 import com.example.mobilesafe.ui.SettingItemView;
 import com.example.mobilesafe.utils.ServiceUtil;
@@ -17,10 +18,14 @@ import com.example.mobilesafe.utils.ServiceUtil;
  * Created by abc on 2016/1/30.
  */
 public class SettingActivity extends Activity {
+
+    //设置归属地显示
+    private SettingItemView siv_show_address;
     private Intent showAddress ;
 
-    private SettingItemView siv_show_address;
-
+    //设置黑名单拦截
+    private SettingItemView siv_callsms_safe;
+    private Intent showSafe;
     private SettingItemView siv_update;
 
     private SettingClickView siv_changbg;
@@ -86,6 +91,37 @@ public class SettingActivity extends Activity {
 
             }
         });
+        //判断是否设置显示黑名单拦截
+        siv_callsms_safe= (SettingItemView) findViewById(R.id.siv_callsms_safe);
+        showSafe = new Intent(this,CallSmsSafeService.class);
+        boolean SafeisRunning =ServiceUtil.isServiceRunning(this,"com.example.mobilesafe.Service.CallSmsSafeService");
+        if(SafeisRunning){
+            //监听来电服务正在运行
+            siv_callsms_safe.setChecked(true);
+        } else{
+            //监听来电服务未运行
+            siv_callsms_safe.setChecked(false);
+        }
+        siv_callsms_safe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = sp.edit();
+                //判断是否选中
+                if (siv_callsms_safe.isChecked()) {
+                    //已经选中
+                    siv_callsms_safe.setChecked(false);
+                    stopService(showSafe);
+                } else {
+                    //没选中
+                    siv_callsms_safe.setChecked(true);
+                    startService(showSafe);
+                }
+                editor.commit();
+
+            }
+        });
+
+
         final String[] names={"半透明","活力橙","卫士蓝","金属灰","苹果绿"};
         siv_changbg= (SettingClickView) findViewById(R.id.scv_changebg);
         siv_changbg.SetTitle("归属地的提示框风格");
