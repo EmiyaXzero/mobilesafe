@@ -73,6 +73,11 @@ public class HomeActivity extends Activity {
                         //进入手机防盗页面
                         showLostFindDialog();
                         break;
+                    case 1:
+                        //进入黑名单拦截界面
+                        intent = new Intent(HomeActivity.this,CallSmsSafeActivity.class);
+                        startActivity(intent);
+                        break;
                     case 7:
                         //进入高级工具页面
                         intent = new Intent(HomeActivity.this,AtoolsActivity.class);

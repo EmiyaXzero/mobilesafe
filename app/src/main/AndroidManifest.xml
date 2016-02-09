@@ -12,9 +12,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"/>
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:allowBackup="true"
@@ -38,6 +38,7 @@
         <activity android:name=".Setup4Activity" />
         <activity android:name=".SelectContactActivity" />
         <activity android:name=".AtoolsActivity" />
+        <activity android:name=".CallSmsSafeActivity" />
         <activity android:name=".NumberAddressQueryActivity" />
 
         <receiver android:name=".receiver.BootCompleteReceiver">
@@ -53,6 +54,7 @@
 
         <service android:name=".Service.GPSService" />
         <service android:name=".Service.AddressService" />
+
     </application>
 
 
