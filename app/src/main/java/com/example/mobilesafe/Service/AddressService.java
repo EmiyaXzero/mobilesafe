@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.view.Gravity;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mobilesafe.R;
 import com.example.mobilesafe.db.dao.NumberAddressQueryUtils;
@@ -64,7 +66,7 @@ public class AddressService extends Service {
     }
 
     private WindowManager.LayoutParams params;
-
+    long[] mHits=new long[2];
     /**
      * 自定义吐司
      */
@@ -72,50 +74,70 @@ public class AddressService extends Service {
     private void myToast(String address) {
         view = View.inflate(this, R.layout.address_show,null);
         TextView  tv= (TextView) view.findViewById(R.id.tv_address);
+        //自定义双击居中
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.arraycopy(mHits,1,mHits,0,mHits.length-1);//数组左移一位
+                mHits[mHits.length-1]= SystemClock.uptimeMillis();
+                if(mHits[0]>=(SystemClock.uptimeMillis()-500)){
+                    //双击了，现在居中
+                    params.x = wm.getDefaultDisplay().getWidth()/2-view.getWidth()/2;
+                    wm.updateViewLayout(v,params);
+                    SharedPreferences.Editor editor =sp.edit();
+                    editor.putInt("lastX",params.x);
+                    editor.commit();
+
+                }
+            }
+        });
+
+
         //设置触摸事件
         view.setOnTouchListener(new View.OnTouchListener() {
             int startX;
             int startY;
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()){
+                switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         //手指按下屏幕
-                         startX= (int) event.getRawX();
-                         startY= (int) event.getRawY();
+                        startX = (int) event.getRawX();
+                        startY = (int) event.getRawY();
                         break;
                     case MotionEvent.ACTION_MOVE:
                         //手指在屏幕移动
-                        int newX= (int) event.getRawX();
-                        int newY= (int) event.getRawY();
-                        int dx=newX-startX;
-                        int dy=newY-startY;
-                        startX=newX;
-                        startY=newY;
-                        params.x+=dx;
-                        params.y+=dy;
+                        int newX = (int) event.getRawX();
+                        int newY = (int) event.getRawY();
+                        int dx = newX - startX;
+                        int dy = newY - startY;
+                        startX = newX;
+                        startY = newY;
+                        params.x += dx;
+                        params.y += dy;
                         //考虑边界问题
-                        if(params.x<0){
-                            params.x=0;
+                        if (params.x < 0) {
+                            params.x = 0;
                         }
-                        if(params.y<0){
-                            params.y=0;
+                        if (params.y < 0) {
+                            params.y = 0;
                         }
-                        if(params.x>(wm.getDefaultDisplay().getWidth()-view.getWidth())){
-                            params.x=wm.getDefaultDisplay().getWidth()-view.getWidth();
+                        if (params.x > (wm.getDefaultDisplay().getWidth() - view.getWidth())) {
+                            params.x = wm.getDefaultDisplay().getWidth() - view.getWidth();
                         }
-                        if(params.y>(wm.getDefaultDisplay().getHeight()-view.getHeight())){
-                            params.y=wm.getDefaultDisplay().getHeight()-view.getHeight();
+                        if (params.y > (wm.getDefaultDisplay().getHeight() - view.getHeight())) {
+                            params.y = wm.getDefaultDisplay().getHeight() - view.getHeight();
                         }
 
                         //更新窗体布局
-                        wm.updateViewLayout(v,params);
+                        wm.updateViewLayout(v, params);
                         break;
                     case MotionEvent.ACTION_UP:
                         //手机离开屏幕   记录控件距离左上角的坐标
-                        SharedPreferences.Editor editor =sp.edit();
-                        editor.putInt("lastX",params.x);
-                        editor.putInt("lastY",params.y);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putInt("lastX", params.x);
+                        editor.putInt("lastY", params.y);
                         editor.commit();
                         break;
                 }
