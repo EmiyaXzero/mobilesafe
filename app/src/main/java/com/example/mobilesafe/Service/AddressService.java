@@ -10,8 +10,11 @@ import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.mobilesafe.R;
@@ -27,7 +30,7 @@ public class AddressService extends Service {
      * 监听来电
      */
     private TelephonyManager tm;
-
+    private SharedPreferences sp;
     private OutCallReceiver receiver;
     private MyPhoneStateListener listener;
 
@@ -60,6 +63,8 @@ public class AddressService extends Service {
 
     }
 
+    private WindowManager.LayoutParams params;
+
     /**
      * 自定义吐司
      */
@@ -67,23 +72,81 @@ public class AddressService extends Service {
     private void myToast(String address) {
         view = View.inflate(this, R.layout.address_show,null);
         TextView  tv= (TextView) view.findViewById(R.id.tv_address);
+        //设置触摸事件
+        view.setOnTouchListener(new View.OnTouchListener() {
+            int startX;
+            int startY;
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        //手指按下屏幕
+                         startX= (int) event.getRawX();
+                         startY= (int) event.getRawY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        //手指在屏幕移动
+                        int newX= (int) event.getRawX();
+                        int newY= (int) event.getRawY();
+                        int dx=newX-startX;
+                        int dy=newY-startY;
+                        startX=newX;
+                        startY=newY;
+                        params.x+=dx;
+                        params.y+=dy;
+                        //考虑边界问题
+                        if(params.x<0){
+                            params.x=0;
+                        }
+                        if(params.y<0){
+                            params.y=0;
+                        }
+                        if(params.x>(wm.getDefaultDisplay().getWidth()-view.getWidth())){
+                            params.x=wm.getDefaultDisplay().getWidth()-view.getWidth();
+                        }
+                        if(params.y>(wm.getDefaultDisplay().getHeight()-view.getHeight())){
+                            params.y=wm.getDefaultDisplay().getHeight()-view.getHeight();
+                        }
+
+                        //更新窗体布局
+                        wm.updateViewLayout(v,params);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        //手机离开屏幕   记录控件距离左上角的坐标
+                        SharedPreferences.Editor editor =sp.edit();
+                        editor.putInt("lastX",params.x);
+                        editor.putInt("lastY",params.y);
+                        editor.commit();
+                        break;
+                }
+                return false;//事件处理完毕。不要让父控件，父布局相应触碰事件
+
+            }
+        });
+
+
         tv.setText(address);
         //"半透明","活力橙","卫士蓝","金属灰","苹果绿"
         int [] ids = {R.drawable.call_locate_white,R.drawable.call_locate_orange,R.drawable.call_locate_blue
                 ,R.drawable.call_locate_gray,R.drawable.call_locate_green};
-        SharedPreferences sp = getSharedPreferences("config",MODE_PRIVATE);
+        sp = getSharedPreferences("config",MODE_PRIVATE);
         int which=sp.getInt("which",0);
         view.setBackgroundResource(ids[which]);
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+         params = new WindowManager.LayoutParams();
         //窗体的参数就设置好了
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
         params.width = WindowManager.LayoutParams.WRAP_CONTENT;
 
+        params.gravity= Gravity.TOP+Gravity.LEFT;//布局位置
+        params.x=sp.getInt("lastX",0);
+        params.y=sp.getInt("lastY",0);
+
         params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+               //取消不可触摸 | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
                 | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
         params.format = PixelFormat.TRANSLUCENT;
-        params.type = WindowManager.LayoutParams.TYPE_TOAST;
+        //安卓系统里面具有电话优先级的窗口类型最高的优先级，并且需要权限
+        params.type = WindowManager.LayoutParams.TYPE_PRIORITY_PHONE;
         wm.addView(view,params);
 
     }
