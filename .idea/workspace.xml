@@ -36,17 +36,17 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="CallSmsSafeActivity.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="CallSmsSafeActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/mobilesafe/CallSmsSafeActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="33" column="39" selection-start-line="33" selection-start-column="39" selection-end-line="33" selection-end-column="39" />
+            <state vertical-scroll-proportion="1.4143223">
+              <caret line="75" column="13" selection-start-line="75" selection-start-column="13" selection-end-line="75" selection-end-column="13" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1277#1278#0" expanded="true" />
-                <element signature="e#1320#1321#0" expanded="true" />
-                <element signature="e#1486#1487#0" expanded="true" />
-                <element signature="e#1525#1526#0" expanded="true" />
+                <element signature="e#1302#1303#0" expanded="true" />
+                <element signature="e#1345#1346#0" expanded="true" />
+                <element signature="e#1511#1512#0" expanded="true" />
+                <element signature="e#1550#1551#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -65,10 +65,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BlackNumberDao.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="BlackNumberDao.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/mobilesafe/db/dao/BlackNumberDao.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.24040921">
+            <state vertical-scroll-proportion="0.0">
               <caret line="93" column="43" selection-start-line="93" selection-start-column="43" selection-end-line="93" selection-end-column="43" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -1606,8 +1606,8 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/mobilesafe/db/BlackNumberDBOpenHelper.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/mobilesafe/domain/BlackNumberInfo.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/list_item_callsms.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/mobilesafe/CallSmsSafeActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/mobilesafe/db/dao/BlackNumberDao.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/mobilesafe/CallSmsSafeActivity.java" />
       </list>
     </option>
   </component>
@@ -2169,8 +2169,8 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="0" width="1315" height="772" extended-state="1" />
-    <editor active="false" />
+    <frame x="-8" y="0" width="1315" height="772" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -2679,16 +2679,15 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/mobilesafe/CallSmsSafeActivity.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/mobilesafe/db/dao/BlackNumberDao.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="33" column="39" selection-start-line="33" selection-start-column="39" selection-end-line="33" selection-end-column="39" />
+          <caret line="93" column="43" selection-start-line="93" selection-start-column="43" selection-end-line="93" selection-end-column="43" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1277#1278#0" expanded="true" />
-            <element signature="e#1320#1321#0" expanded="true" />
-            <element signature="e#1486#1487#0" expanded="true" />
-            <element signature="e#1525#1526#0" expanded="true" />
+            <element signature="e#585#586#0" expanded="true" />
+            <element signature="e#647#648#0" expanded="true" />
+            <element signature="e#2243#2260#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2703,15 +2702,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/mobilesafe/db/dao/BlackNumberDao.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/mobilesafe/CallSmsSafeActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.24040921">
-          <caret line="93" column="43" selection-start-line="93" selection-start-column="43" selection-end-line="93" selection-end-column="43" />
+        <state vertical-scroll-proportion="1.4143223">
+          <caret line="75" column="13" selection-start-line="75" selection-start-column="13" selection-end-line="75" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#585#586#0" expanded="true" />
-            <element signature="e#647#648#0" expanded="true" />
-            <element signature="e#2243#2260#0" expanded="true" />
+            <element signature="e#1302#1303#0" expanded="true" />
+            <element signature="e#1345#1346#0" expanded="true" />
+            <element signature="e#1511#1512#0" expanded="true" />
+            <element signature="e#1550#1551#0" expanded="true" />
           </folding>
         </state>
       </provider>
