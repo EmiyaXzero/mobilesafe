@@ -10,7 +10,6 @@ import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
-import android.provider.CallLog;
 import android.support.annotation.Nullable;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsMessage;
