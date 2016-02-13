@@ -99,13 +99,35 @@ public class BlackNumberDao  {
     }
 
     /**
-     * 查找所有的黑名单
+     * 查找部分黑名单号码
      */
     public List<BlackNumberInfo> findAll(){
+
         List<BlackNumberInfo> infos = new ArrayList<BlackNumberInfo>();
         SQLiteDatabase db  = helper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from blacknumber order by _id desc",null); //降序查找
+        Cursor cursor = db.rawQuery("select * from blacknumber order by _id desc", null); //降序查找
         while(cursor.moveToNext()){
+            BlackNumberInfo info = new BlackNumberInfo();
+            info.setNumber(cursor.getString(1));
+            info.setMode(cursor.getString(2));
+            infos.add(info);
+        }
+        cursor.close();
+        db.close();
+        return infos;
+    }
+    /**
+     * 查找部分黑名单号码
+     *
+     * @param offset    从哪个位置开始获取数据
+     * @param maxnumber 一次最多获取多少条记录
+     */
+    public List<BlackNumberInfo> findPart(int offset, int maxnumber) {
+
+        List<BlackNumberInfo> infos = new ArrayList<BlackNumberInfo>();
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from blacknumber order by _id desc limit ? offset ? ", new String[]{String.valueOf(maxnumber),String.valueOf(offset)}); //降序查找 limit offset 只能在末尾
+        while (cursor.moveToNext()) {
             BlackNumberInfo info = new BlackNumberInfo();
             info.setNumber(cursor.getString(1));
             info.setMode(cursor.getString(2));
