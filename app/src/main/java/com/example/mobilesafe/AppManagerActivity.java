@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -12,6 +11,7 @@ import android.os.StatFs;
 import android.text.format.Formatter;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -45,10 +45,16 @@ public class AppManagerActivity extends Activity {
      */
     private List<AppInfo> systemAppinfos;
 
+    /**
+     * 当前程序信息状态
+     */
+    private TextView tv_status;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_manager);
+        tv_status = (TextView) findViewById(R.id.tv_status);
         tv_avail_rom = (TextView) findViewById(R.id.tv_avail_rom);
         tv_avail_sd = (TextView) findViewById(R.id.tv_avail_sd);
         lv_app_manager = (ListView) findViewById(R.id.lv_app_manager);
@@ -81,9 +87,33 @@ public class AppManagerActivity extends Activity {
                     }
                 });
             }
-
-            ;
         }.start();
+        lv_app_manager.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            /**
+             *
+             * @param view
+             * @param firstVisibleItem 第一个可见条目在listView集合的位置
+             * @param visibleItemCount
+             * @param totalItemCount
+             */
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+               //进行判断防止子线程还没加载完数据
+                if(userAppinfos!=null&&systemAppinfos!=null) {
+                    if (firstVisibleItem > userAppinfos.size()) {
+                        tv_status.setText("系统程序:" + systemAppinfos.size() + "个");
+                    } else {
+                        tv_status.setText("用户程序" + userAppinfos.size() + "个");
+                    }
+                }
+            }
+        });
+
     }
 
     private class AppAdapter extends BaseAdapter {
@@ -92,7 +122,7 @@ public class AppManagerActivity extends Activity {
         @Override
         public int getCount() {
             //return infos.size();
-            return userAppinfos.size()+1+systemAppinfos.size()+1;//增加的两条标签
+            return userAppinfos.size() + 1 + systemAppinfos.size() + 1;//增加的两条标签
         }
 
         @Override
@@ -107,33 +137,33 @@ public class AppManagerActivity extends Activity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            if(position==0){
+            if (position == 0) {
                 //显示系统程序有多少个的小标签
                 TextView tv = new TextView(getApplicationContext());
                 tv.setTextColor(Color.WHITE);
                 tv.setBackgroundColor(Color.GRAY);
-                tv.setText("用户程序"+userAppinfos.size()+"个");
+                tv.setText("用户程序" + userAppinfos.size() + "个");
                 return tv;
-            }else if(position==userAppinfos.size()+1){
+            } else if (position == userAppinfos.size() + 1) {
                 //显示用户程序有多少个的小标签
                 TextView tv = new TextView(getApplicationContext());
                 tv.setTextColor(Color.WHITE);
                 tv.setBackgroundColor(Color.GRAY);
-                tv.setText("系统程序"+systemAppinfos.size()+"个");
+                tv.setText("系统程序" + systemAppinfos.size() + "个");
                 return tv;
             }
 
             View view;
             ViewHolder viewHolder;
-            AppInfo  info;
-            if(position<=userAppinfos.size()){
-                 info = userAppinfos.get(position-1);
-            }else {
-                 info = systemAppinfos.get(position-2-userAppinfos.size());
+            AppInfo info;
+            if (position <= userAppinfos.size()) {
+                info = userAppinfos.get(position - 1);
+            } else {
+                info = systemAppinfos.get(position - 2 - userAppinfos.size());
             }
 
             //不仅检查是否为空并且要判断是否能被复用
-            if (convertView != null&&convertView instanceof RelativeLayout) {
+            if (convertView != null && convertView instanceof RelativeLayout) {
                 view = convertView;
                 viewHolder = (ViewHolder) view.getTag();
             } else {
