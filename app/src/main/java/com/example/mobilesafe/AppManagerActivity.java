@@ -13,6 +13,10 @@ import android.text.format.Formatter;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -148,9 +152,24 @@ public class AppManagerActivity extends Activity {
 
                 View contentView =View.inflate(getApplicationContext(),R.layout.popup_app_item,null);
                 popupWindow = new PopupWindow(contentView,-2, DensityUtil.dip2px(getApplicationContext(), 70));
+                //动画效果的播放必须要求窗体有背景颜色
+                popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                //透明颜色也是颜色
                 int[] location = new int[2];
                 view.getLocationInWindow(location);
-                popupWindow.showAtLocation(parent, Gravity.LEFT|Gravity.TOP,DensityUtil.dip2px(getApplicationContext(),150),location[1]);
+                popupWindow.showAtLocation(parent, Gravity.LEFT | Gravity.TOP, DensityUtil.dip2px(getApplicationContext(), 150), location[1]);
+
+
+                ScaleAnimation sa = new ScaleAnimation(0.3f,1.0f,0.3f,1.0f, Animation.RELATIVE_TO_SELF,0,Animation.RELATIVE_TO_SELF,0.5f);
+                sa.setDuration(300);
+
+
+                AlphaAnimation aa =new AlphaAnimation(0.5f,1.0f);
+                aa.setDuration(300);
+                AnimationSet set = new AnimationSet(false);
+                set.addAnimation(sa);
+                set.addAnimation(aa);
+                contentView.startAnimation(set);
 
             }
         });
