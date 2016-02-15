@@ -4,7 +4,6 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Debug;
 
@@ -39,6 +38,7 @@ public class TaskInfoProvider {
                 ApplicationInfo applicationInfo= pm.getApplicationInfo(packName, 0);
                 Drawable icon =applicationInfo.loadIcon(pm);
                 String name = applicationInfo.loadLabel(pm).toString();
+                taskInfo.setPackname(packName);
                 taskInfo.setIcon(icon);
                 taskInfo.setName(name);
                 if((applicationInfo.flags&ApplicationInfo.FLAG_SYSTEM)==0){

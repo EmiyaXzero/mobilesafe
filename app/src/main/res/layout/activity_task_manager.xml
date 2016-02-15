@@ -32,8 +32,9 @@
             android:text="剩余/总内存:"
             android:textColor="#000000" />
     </RelativeLayout>
-
+    <!--android:layout_weight="1000"  不与0一起用表示优先级 值越大优先级越低-->
     <FrameLayout
+        android:layout_weight="1000"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -72,6 +73,36 @@
             android:background="#ff888888"/>
 
     </FrameLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:onClick="selectAll"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="全选"/>
+        <Button
+            android:onClick="selectOppo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="反选"/>
+        <Button
+            android:onClick="killAll"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="清理"/>
+        <Button
+            android:onClick="enterSetting"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="设置"/>
+
+    </LinearLayout>
 
 
 </LinearLayout>
