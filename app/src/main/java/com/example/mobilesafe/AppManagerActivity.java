@@ -3,8 +3,12 @@ package com.example.mobilesafe;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,6 +30,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mobilesafe.domain.AppInfo;
 import com.example.mobilesafe.engine.AppInfoProvider;
@@ -39,11 +44,12 @@ import java.util.List;
 /**
  * Created by abc on 2016/2/14.
  */
-public class AppManagerActivity extends Activity {
+public class AppManagerActivity extends Activity implements View.OnClickListener {
     private TextView tv_avail_rom;
     private TextView tv_avail_sd;
     private ListView lv_app_manager;
     private LinearLayout ll_loading;
+    private AppAdapter adapter;
     private List<AppInfo> infos;
     /**
      * 用户软件集合
@@ -60,9 +66,17 @@ public class AppManagerActivity extends Activity {
     private TextView tv_status;
 
     /**
-     *弹出的悬浮窗体
+     * 弹出的悬浮窗体
      */
-    private  PopupWindow popupWindow;
+    private PopupWindow popupWindow;
+    //卸载
+    private LinearLayout ll_uninstall;
+    //开启
+    private LinearLayout ll_start;
+    //分享
+    private LinearLayout ll_share;
+
+    private AppInfo info;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,29 +93,7 @@ public class AppManagerActivity extends Activity {
         tv_avail_rom.setText("内存可用空间:" + Formatter.formatFileSize(this, romSize));
         //避免主进程阻塞 infos= AppInfoProvider.getAppInfos(this);
         ll_loading.setVisibility(View.VISIBLE);
-        new Thread() {
-            public void run() {
-                infos = AppInfoProvider.getAppInfos(AppManagerActivity.this);
-                systemAppinfos = new ArrayList<AppInfo>();
-                userAppinfos = new ArrayList<AppInfo>();
-                for (AppInfo info : infos) {
-                    if (info.isUserApp()) {
-                        userAppinfos.add(info);
-                    } else {
-                        systemAppinfos.add(info);
-                    }
-
-                }
-                //加载ListView数据适配器
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        lv_app_manager.setAdapter(new AppAdapter());
-                        ll_loading.setVisibility(View.INVISIBLE);
-                    }
-                });
-            }
-        }.start();
+        fillData();
         lv_app_manager.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -134,24 +126,32 @@ public class AppManagerActivity extends Activity {
         lv_app_manager.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AppInfo info;
-                if(position==0){
+
+                if (position == 0) {
                     return;
-                }else if(position==userAppinfos.size()+1){
+                } else if (position == userAppinfos.size() + 1) {
                     return;
-                }else if(position<=userAppinfos.size()){
+                } else if (position <= userAppinfos.size()) {
                     //用户程序
-                    int newPosition=position-1;
-                    info=userAppinfos.get(newPosition);
-                }else {
+                    int newPosition = position - 1;
+                    info = userAppinfos.get(newPosition);
+                } else {
                     //系统程序
-                    int newPosition=position-2-userAppinfos.size();
-                    info=systemAppinfos.get(newPosition);
+                    int newPosition = position - 2 - userAppinfos.size();
+                    info = systemAppinfos.get(newPosition);
                 }
                 dismissPopupWindow();
 
-                View contentView =View.inflate(getApplicationContext(),R.layout.popup_app_item,null);
-                popupWindow = new PopupWindow(contentView,-2, DensityUtil.dip2px(getApplicationContext(), 70));
+                View contentView = View.inflate(getApplicationContext(), R.layout.popup_app_item, null);
+                ll_uninstall = (LinearLayout) contentView.findViewById(R.id.ll_uninstall);
+                ll_start = (LinearLayout) contentView.findViewById(R.id.ll_start);
+                ll_share = (LinearLayout) contentView.findViewById(R.id.ll_share);
+
+                ll_start.setOnClickListener(AppManagerActivity.this);
+                ll_uninstall.setOnClickListener(AppManagerActivity.this);
+                ll_share.setOnClickListener(AppManagerActivity.this);
+
+                popupWindow = new PopupWindow(contentView, -2, DensityUtil.dip2px(getApplicationContext(), 70));
                 //动画效果的播放必须要求窗体有背景颜色
                 popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 //透明颜色也是颜色
@@ -160,11 +160,11 @@ public class AppManagerActivity extends Activity {
                 popupWindow.showAtLocation(parent, Gravity.LEFT | Gravity.TOP, DensityUtil.dip2px(getApplicationContext(), 150), location[1]);
 
 
-                ScaleAnimation sa = new ScaleAnimation(0.3f,1.0f,0.3f,1.0f, Animation.RELATIVE_TO_SELF,0,Animation.RELATIVE_TO_SELF,0.5f);
+                ScaleAnimation sa = new ScaleAnimation(0.3f, 1.0f, 0.3f, 1.0f, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0.5f);
                 sa.setDuration(300);
 
 
-                AlphaAnimation aa =new AlphaAnimation(0.5f,1.0f);
+                AlphaAnimation aa = new AlphaAnimation(0.5f, 1.0f);
                 aa.setDuration(300);
                 AnimationSet set = new AnimationSet(false);
                 set.addAnimation(sa);
@@ -177,12 +177,123 @@ public class AppManagerActivity extends Activity {
     }
 
     /**
+     * 初始化数据
+     */
+
+    private void fillData() {
+        new Thread() {
+            public void run() {
+                infos = AppInfoProvider.getAppInfos(AppManagerActivity.this);
+                systemAppinfos = new ArrayList<AppInfo>();
+                userAppinfos = new ArrayList<AppInfo>();
+                for (AppInfo info : infos) {
+                    if (info.isUserApp()) {
+                        userAppinfos.add(info);
+                    } else {
+                        systemAppinfos.add(info);
+                    }
+
+                }
+                //加载ListView数据适配器
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (adapter == null) {
+                            adapter = new AppAdapter();
+                            lv_app_manager.setAdapter(adapter);
+                        } else {
+                            adapter.notifyDataSetChanged();
+                        }
+                        ll_loading.setVisibility(View.INVISIBLE);
+                    }
+                });
+            }
+        }.start();
+    }
+
+    /**
      * 清除popuowindow
      */
     private void dismissPopupWindow() {
-        if(popupWindow!=null&&popupWindow.isShowing()){
+        if (popupWindow != null && popupWindow.isShowing()) {
             popupWindow.dismiss();
-            popupWindow=null;
+            popupWindow = null;
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.ll_uninstall:
+                if(info.isUserApp()) {
+                    uninstallApplication();
+                }else {
+                    Toast.makeText(this,"系统应用需要获取root权限才能卸载",Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.ll_share:
+                shareApplication();
+                break;
+            case R.id.ll_start:
+                //开启应用程序
+                startApplication();
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * 分享程序
+     */
+    private void shareApplication() {
+             Intent intent = new Intent();
+        intent.setAction("android.intent.action.SEND");
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, "推荐您使用一款软件,名称叫："+info.getName());
+        startActivity(intent);
+    }
+
+    /**
+     * 卸载应用
+     */
+    private void uninstallApplication() {
+        // <action android:name="android.intent.action.VIEW" />
+        // <action android:name="android.intent.action.DELETE" />
+        // <category android:name="android.intent.category.DEFAULT" />
+        // <data android:scheme="package" />
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.VIEW");
+        intent.setAction("android.intent.action.DELETE");
+        intent.addCategory("android.intent.category.DEFAULT");
+        intent.setData(Uri.parse("package:" + info.getPackname()));
+        startActivityForResult(intent, 0);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //刷新界面
+        fillData();
+    }
+
+    /**
+     * 开启应用
+     */
+    private void startApplication() {
+        //查询这个应用程序入口actvity
+        PackageManager pm = getPackageManager();
+       /* Intent intent=new Intent();
+        intent.setAction("android.intent.action.MAIN");
+        intent.addCategory("android.intent.category.LAUNCHER");
+      查询出来手机所有具有启动能力的activity
+       List<ResolveInfo> resolveInfos= pm.queryIntentActivities(intent, PackageManager.GET_INTENT_FILTERS);*/
+        Intent intent = pm.getLaunchIntentForPackage(info.getPackname());
+        if (intent != null) {
+            startActivity(intent);
+        } else {
+            Toast.makeText(getApplicationContext(), "不能启动当前应用", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -290,7 +401,8 @@ public class AppManagerActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         dismissPopupWindow();
+        super.onDestroy();
+
     }
 }
