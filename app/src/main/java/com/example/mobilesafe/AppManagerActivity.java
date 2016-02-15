@@ -4,23 +4,28 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.text.format.Formatter;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.mobilesafe.domain.AppInfo;
 import com.example.mobilesafe.engine.AppInfoProvider;
+import com.example.mobilesafe.utils.DensityUtil;
 
 import org.w3c.dom.Text;
 
@@ -49,6 +54,11 @@ public class AppManagerActivity extends Activity {
      * 当前程序信息状态
      */
     private TextView tv_status;
+
+    /**
+     *弹出的悬浮窗体
+     */
+    private  PopupWindow popupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,8 +113,11 @@ public class AppManagerActivity extends Activity {
              */
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-               //进行判断防止子线程还没加载完数据
-                if(userAppinfos!=null&&systemAppinfos!=null) {
+                dismissPopupWindow();
+
+
+                //进行判断防止子线程还没加载完数据
+                if (userAppinfos != null && systemAppinfos != null) {
                     if (firstVisibleItem > userAppinfos.size()) {
                         tv_status.setText("系统程序:" + systemAppinfos.size() + "个");
                     } else {
@@ -114,6 +127,44 @@ public class AppManagerActivity extends Activity {
             }
         });
 
+        lv_app_manager.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AppInfo info;
+                if(position==0){
+                    return;
+                }else if(position==userAppinfos.size()+1){
+                    return;
+                }else if(position<=userAppinfos.size()){
+                    //用户程序
+                    int newPosition=position-1;
+                    info=userAppinfos.get(newPosition);
+                }else {
+                    //系统程序
+                    int newPosition=position-2-userAppinfos.size();
+                    info=systemAppinfos.get(newPosition);
+                }
+                dismissPopupWindow();
+
+                View contentView =View.inflate(getApplicationContext(),R.layout.popup_app_item,null);
+                popupWindow = new PopupWindow(contentView,-2, DensityUtil.dip2px(getApplicationContext(), 70));
+                int[] location = new int[2];
+                view.getLocationInWindow(location);
+                popupWindow.showAtLocation(parent, Gravity.LEFT|Gravity.TOP,DensityUtil.dip2px(getApplicationContext(),150),location[1]);
+
+            }
+        });
+
+    }
+
+    /**
+     * 清除popuowindow
+     */
+    private void dismissPopupWindow() {
+        if(popupWindow!=null&&popupWindow.isShowing()){
+            popupWindow.dismiss();
+            popupWindow=null;
+        }
     }
 
     private class AppAdapter extends BaseAdapter {
@@ -216,5 +267,11 @@ public class AppManagerActivity extends Activity {
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         manager.getMemoryInfo(outInfo);
         return outInfo.availMem;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dismissPopupWindow();
     }
 }
