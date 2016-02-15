@@ -83,6 +83,11 @@ public class HomeActivity extends Activity {
                         intent = new Intent(HomeActivity.this,AppManagerActivity.class);
                         startActivity(intent);
                         break;
+                    case 3:
+                        //进入进程管理界面
+                        intent = new Intent(HomeActivity.this,TaskManagerActivity.class);
+                        startActivity(intent);
+                        break;
                     case 7:
                         //进入高级工具页面
                         intent = new Intent(HomeActivity.this,AtoolsActivity.class);
