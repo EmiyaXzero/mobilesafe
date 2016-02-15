@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -68,6 +69,7 @@ public class SplashActivity extends Activity {
         tv_update_info = (TextView) findViewById(R.id.tv_update_info);
         //拷贝数据库到data/data/
         copyDB();
+        installShortCut();
         if (sp.getBoolean("update", false)) {
             //检查升级
             checkupdate();
@@ -90,6 +92,31 @@ public class SplashActivity extends Activity {
     }
 
     /**
+     * 创建快捷图标
+     */
+    private void installShortCut() {
+        SharedPreferences.Editor editor =sp.edit();
+        if(sp.getBoolean("shortcut",false)){
+            return ;
+        }
+        //发送广播的意图
+        Intent intent = new Intent();
+        intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+        //快捷方式 要包含三个重要的信息,名称，图标，干什么事情
+        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME,"手机小卫士");
+        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+        //快捷方式的意图
+        Intent shortCutIntent=new Intent();
+        shortCutIntent.setAction("android.intent.action.MAIN");
+        shortCutIntent.addCategory("android.intent.category.LAUNCHER");
+        shortCutIntent.setClassName(getPackageName(), "com.example.mobilesafe.SplashActivity");
+        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortCutIntent);
+        sendBroadcast(intent);
+        editor.putBoolean("shortcut",true);
+        editor.commit();
+    }
+
+    /**
      * 把address.db拷贝到data/data目录下
      */
     private void copyDB() {
@@ -98,10 +125,10 @@ public class SplashActivity extends Activity {
             File file = new File(getFilesDir(), "address.db");//getFilesDir()获得file目录
             if (file.exists() && file.length() > 0) {
                 //已经有不在拷贝
-                Log.d("aaaaaaa","已经拷贝了不用拷贝");
+                Log.d("aaaaaaa", "已经拷贝了不用拷贝");
                 return;
             } else {
-                Log.d("aaaaa","正在拷贝");
+                Log.d("aaaaa", "正在拷贝");
                 InputStream is = getAssets().open("address.db");
                 FileOutputStream fos = new FileOutputStream(file);
                 byte[] buff = new byte[1024];
