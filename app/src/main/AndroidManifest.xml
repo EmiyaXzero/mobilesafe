@@ -50,7 +50,10 @@
         <activity android:name=".AppManagerActivity" />
         <activity android:name=".TaskManagerActivity" />
         <activity android:name=".TaskSettingActivity" />
-        <activity android:name=".EnterPwdActivity"/>
+        <activity android:name=".EnterPwdActivity"
+            android:launchMode="singleInstance"
+            />
+        <!--launchMode启动模式 singleInstance单独启动模式-->
 
         <receiver android:name=".receiver.BootCompleteReceiver">
             <intent-filter>
