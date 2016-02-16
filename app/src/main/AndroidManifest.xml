@@ -52,8 +52,10 @@
         <activity android:name=".TaskSettingActivity" />
         <activity android:name=".EnterPwdActivity"
             android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
             />
         <!--launchMode启动模式 singleInstance单独启动模式-->
+        <!--excludeFromRecents   当为true的时候不会出现最近的应用中-->
 
         <receiver android:name=".receiver.BootCompleteReceiver">
             <intent-filter>
