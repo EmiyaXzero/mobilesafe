@@ -48,6 +48,7 @@
         <activity android:name=".NumberAddressQueryActivity" />
         <activity android:name=".AppManagerActivity"/>
         <activity android:name=".TaskManagerActivity"/>
+        <activity android:name=".TaskSettingActivity"/>
 
         <receiver android:name=".receiver.BootCompleteReceiver">
             <intent-filter>
@@ -59,10 +60,21 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".receiver.MyWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/process_widget_provider"/>
+
+        </receiver>
 
         <service android:name=".Service.GPSService" />
         <service android:name=".Service.AddressService" />
         <service android:name=".Service.CallSmsSafeService" />
+        <service android:name=".Service.AutoCleanService"/>
 
     </application>
 

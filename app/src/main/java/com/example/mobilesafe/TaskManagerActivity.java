@@ -2,6 +2,8 @@ package com.example.mobilesafe;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.Formatter;
@@ -22,10 +24,9 @@ import com.example.mobilesafe.domain.TaskInfo;
 import com.example.mobilesafe.engine.TaskInfoProvider;
 import com.example.mobilesafe.utils.SystemInfoUtils;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Created by abc on 2016/2/15.
@@ -50,10 +51,13 @@ public class TaskManagerActivity extends Activity {
     private long availMemory;
     private long allMemory;
 
+    private SharedPreferences sp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_manager);
+        sp=getSharedPreferences("config",MODE_PRIVATE);
         tv_process_count = (TextView) findViewById(R.id.tv_process_count);
         tv_mem_info = (TextView) findViewById(R.id.tv_mem_info);
         lv_task_manager = (ListView) findViewById(R.id.lv_task_manager);
@@ -163,7 +167,11 @@ public class TaskManagerActivity extends Activity {
 
         @Override
         public int getCount() {
-            return systemTaskInfos.size() + userTaskInfos.size() + 2;
+            if(sp.getBoolean("showSystem",false)) {
+                return systemTaskInfos.size() + userTaskInfos.size() + 2;
+            }else {
+                return userTaskInfos.size() + 1;
+            }
         }
 
         @Override
@@ -288,7 +296,7 @@ public class TaskManagerActivity extends Activity {
         Toast.makeText(
                 this,
                 "杀死了" + count + "个进程，释放了"
-                        + Formatter.formatFileSize(this, savedMem) + "的内存", 1)
+                        + Formatter.formatFileSize(this, savedMem) + "的内存", Toast.LENGTH_SHORT)
                 .show();
         processCount -= count;
         tv_process_count.setText("运行的进程个数:" + processCount + "个");
@@ -300,7 +308,13 @@ public class TaskManagerActivity extends Activity {
      * 进入设置
      */
     public void enterSetting(View view) {
-
+        Intent intent = new Intent(this,TaskSettingActivity.class);
+        startActivityForResult(intent, 0);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        adapter.notifyDataSetChanged();
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }
