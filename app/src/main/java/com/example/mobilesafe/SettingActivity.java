@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.example.mobilesafe.Service.AddressService;
 import com.example.mobilesafe.Service.CallSmsSafeService;
+import com.example.mobilesafe.Service.WatchDogService;
 import com.example.mobilesafe.ui.SettingClickView;
 import com.example.mobilesafe.ui.SettingItemView;
 import com.example.mobilesafe.utils.ServiceUtil;
@@ -22,6 +23,7 @@ public class SettingActivity extends Activity {
     //设置归属地显示
     private SettingItemView siv_show_address;
     private Intent showAddress ;
+    private Intent startWatchDog;
 
     //设置黑名单拦截
     private SettingItemView siv_callsms_safe;
@@ -30,6 +32,8 @@ public class SettingActivity extends Activity {
 
     private SettingClickView siv_changbg;
 
+    private SettingItemView siv_watchdog;
+
     private SharedPreferences sp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,7 @@ public class SettingActivity extends Activity {
         setContentView(R.layout.activity_setting);
         sp=getSharedPreferences("config",MODE_PRIVATE);
         siv_update= (SettingItemView) findViewById(R.id.siv_update);
+        siv_watchdog= (SettingItemView) findViewById(R.id.siv_watchdog);
         //判断是否设置自动更新
         if(sp.getBoolean("update",false)){
             siv_update.setChecked(true);
@@ -121,6 +126,34 @@ public class SettingActivity extends Activity {
             }
         });
 
+        //判断是否设置看门狗
+        startWatchDog = new Intent(this, WatchDogService.class);
+        boolean wacthdogIsRunning =ServiceUtil.isServiceRunning(this,"com.example.mobilesafe.Service.WatchDogService");
+        if(wacthdogIsRunning){
+            //监听来电服务正在运行
+            siv_watchdog.setChecked(true);
+        } else{
+            //监听来电服务未运行
+            siv_watchdog.setChecked(false);
+        }
+        siv_watchdog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = sp.edit();
+                //判断是否选中
+                if (siv_watchdog.isChecked()) {
+                    //已经选中
+                    siv_watchdog.setChecked(false);
+                    stopService(startWatchDog);
+                } else {
+                    //没选中
+                    siv_watchdog.setChecked(true);
+                    startService(startWatchDog);
+                }
+                editor.commit();
+
+            }
+        });
 
         final String[] names={"半透明","活力橙","卫士蓝","金属灰","苹果绿"};
         siv_changbg= (SettingClickView) findViewById(R.id.scv_changebg);

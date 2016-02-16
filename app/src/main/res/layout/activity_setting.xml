@@ -48,7 +48,15 @@
         sh:desc_off="黑名单拦截已经关闭"
         sh:desc_on="黑名单拦截已经开启"
         sh:dtitle="黑名单拦截设置">
+    </com.example.mobilesafe.ui.SettingItemView>
 
+    <com.example.mobilesafe.ui.SettingItemView
+        android:id="@+id/siv_watchdog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        sh:desc_off="看门狗服务已经关闭"
+        sh:desc_on="看门狗服务已经开启"
+        sh:dtitle="看门狗服务设置">
     </com.example.mobilesafe.ui.SettingItemView>
 
 
