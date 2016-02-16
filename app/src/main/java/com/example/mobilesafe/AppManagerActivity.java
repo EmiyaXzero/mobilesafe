@@ -32,6 +32,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mobilesafe.db.dao.ApplockDao;
 import com.example.mobilesafe.domain.AppInfo;
 import com.example.mobilesafe.engine.AppInfoProvider;
 import com.example.mobilesafe.utils.DensityUtil;
@@ -78,6 +79,8 @@ public class AppManagerActivity extends Activity implements View.OnClickListener
 
     private AppInfo info;
 
+    private ApplockDao dao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +96,7 @@ public class AppManagerActivity extends Activity implements View.OnClickListener
         tv_avail_rom.setText("内存可用空间:" + Formatter.formatFileSize(this, romSize));
         //避免主进程阻塞 infos= AppInfoProvider.getAppInfos(this);
         ll_loading.setVisibility(View.VISIBLE);
+        dao=new ApplockDao(this);
         fillData();
         lv_app_manager.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -171,6 +175,41 @@ public class AppManagerActivity extends Activity implements View.OnClickListener
                 set.addAnimation(aa);
                 contentView.startAnimation(set);
 
+            }
+        });
+        /**
+         * 程序锁 设置条目 长点击事件监听器
+         */
+
+        lv_app_manager.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    return true;
+                } else if (position == userAppinfos.size() + 1) {
+                    return true;
+                } else if (position <= userAppinfos.size()) {
+                    //用户程序
+                    int newPosition = position - 1;
+                    info = userAppinfos.get(newPosition);
+                } else {
+                    //系统程序
+                    int newPosition = position - 2 - userAppinfos.size();
+                    info = systemAppinfos.get(newPosition);
+                }
+                ViewHolder viewHolder = (ViewHolder) view.getTag();
+                //判断条目是否存在数据库锁里面
+                if(dao.find(info.getPackname())){
+                    //被锁定的程序，解除锁定，并且改变图标
+                    dao.delete(info.getPackname());
+                    viewHolder.iv_status.setImageResource(R.drawable.unlock);
+                }else{
+                    //增加条目，改变图标
+                    dao.add(info.getPackname());
+                    viewHolder.iv_status.setImageResource(R.drawable.lock);
+                }
+
+                return true;
             }
         });
 
@@ -353,6 +392,7 @@ public class AppManagerActivity extends Activity implements View.OnClickListener
                 viewHolder.icon = (ImageView) view.findViewById(R.id.iv_app_icon);
                 viewHolder.tv_name = (TextView) view.findViewById(R.id.tv_app_name);
                 viewHolder.tv_location = (TextView) view.findViewById(R.id.tv_app_location);
+                viewHolder.iv_status= (ImageView) view.findViewById(R.id.iv_status);
                 view.setTag(viewHolder);
             }
             viewHolder.tv_name.setText(info.getName());
@@ -362,6 +402,12 @@ public class AppManagerActivity extends Activity implements View.OnClickListener
             } else {
                 viewHolder.tv_location.setText("外部存储");
             }
+            if(dao.find(info.getPackname())){
+                viewHolder.iv_status.setImageResource(R.drawable.lock);
+            }else {
+                viewHolder.iv_status.setImageResource(R.drawable.unlock);
+            }
+
             return view;
         }
     }
@@ -370,6 +416,7 @@ public class AppManagerActivity extends Activity implements View.OnClickListener
         TextView tv_name;
         TextView tv_location;
         ImageView icon;
+        ImageView iv_status;
     }
 
     /**
