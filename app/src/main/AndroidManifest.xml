@@ -22,6 +22,8 @@
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
     <uses-permission android:name="android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.GET_PACKAGE_SIZE"/>
+    <uses-permission android:name="android.permission.CLEAR_APP_CACHE"/>
 
     <application
         android:allowBackup="true"
@@ -57,7 +59,9 @@
         <!--launchMode启动模式 singleInstance单独启动模式-->
         <!--excludeFromRecents   当为true的时候不会出现最近的应用中-->
         <activity android:name=".TrafficManagerActivity"/>
-        <activity android:name=".AntiVirusActivity"/>
+        <activity android:name=".AntiVirusActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
+        <activity android:name=".CleanCacheActivity"/>
 
         <receiver android:name=".receiver.BootCompleteReceiver">
             <intent-filter>
