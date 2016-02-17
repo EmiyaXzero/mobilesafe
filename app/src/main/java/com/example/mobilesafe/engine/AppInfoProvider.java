@@ -45,6 +45,10 @@ public class AppInfoProvider {
                 //SD卡里
                 info.setInRom(false);
             }
+            /**
+             *操作系统分配给应用程序的一个固定编号，一旦程序安装上来就固定不变
+             */
+            info.setUid(p.applicationInfo.uid);
             info.setIcon(icon);
             info.setName(name);
             info.setPackname(packageName);

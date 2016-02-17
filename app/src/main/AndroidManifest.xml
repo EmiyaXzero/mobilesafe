@@ -56,6 +56,8 @@
             />
         <!--launchMode启动模式 singleInstance单独启动模式-->
         <!--excludeFromRecents   当为true的时候不会出现最近的应用中-->
+        <activity android:name=".TrafficManagerActivity"/>
+        <activity android:name=".AntiVirusActivity"/>
 
         <receiver android:name=".receiver.BootCompleteReceiver">
             <intent-filter>

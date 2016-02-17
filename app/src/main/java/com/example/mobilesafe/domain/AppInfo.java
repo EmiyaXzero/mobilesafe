@@ -12,6 +12,15 @@ public class AppInfo {
     private String   packname;
     private boolean inRom;   //手机内存还是sd卡
     private boolean userApp; //系统应用 用户应用
+    private int      uid;
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
 
     public boolean isInRom() {
         return inRom;

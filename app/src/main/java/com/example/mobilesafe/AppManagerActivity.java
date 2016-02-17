@@ -398,9 +398,9 @@ public class AppManagerActivity extends Activity implements View.OnClickListener
             viewHolder.tv_name.setText(info.getName());
             viewHolder.icon.setImageDrawable(info.getIcon());
             if (info.isInRom()) {
-                viewHolder.tv_location.setText("手机内存");
+                viewHolder.tv_location.setText("手机内存"+"uid"+info.getUid());
             } else {
-                viewHolder.tv_location.setText("外部存储");
+                viewHolder.tv_location.setText("外部存储"+"uid"+info.getUid());
             }
             if(dao.find(info.getPackname())){
                 viewHolder.iv_status.setImageResource(R.drawable.lock);
